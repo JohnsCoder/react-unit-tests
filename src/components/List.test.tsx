@@ -1,21 +1,10 @@
-import {
-  render,
-  fireEvent,
-  getByPlaceholderText,
-  getAllByAltText,
-  getAllByTestId,
-  getByTestId,
-  waitFor,
-  screen,
-  waitForElementToBeRemoved,
-  queryByText,
-} from "@testing-library/react";
+import { render, waitFor, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import List from "./List";
 
 describe("List Component", () => {
   it("should render list items", async () => {
-    const { getByText, rerender, queryByText } = render(
+    const { getByText, rerender, queryByText, unmount } = render(
       <List initialItens={["Miguel", "João", "Fabiano", "Paulo"]} />
     );
 
@@ -24,10 +13,11 @@ describe("List Component", () => {
     expect(getByText("Fabiano")).toBeInTheDocument();
     expect(getByText("Paulo")).toBeInTheDocument();
 
-    await rerender(<List initialItens={["Carlos"]} />);
+    unmount();
+    render(<List initialItens={["Carlos"]} />);
 
-    expect(screen.getByText("Paulo")).toBeInTheDocument();
-    expect(screen.queryByText("João")).not.toBeInTheDocument();
+    expect(getByText("Carlos")).toBeInTheDocument();
+    expect(queryByText("João")).not.toBeInTheDocument();
   });
 
   it("should be able to add new item to the list", async () => {
@@ -50,7 +40,6 @@ describe("List Component", () => {
     // });
   });
 
-  
   it("should be able to remove an item from the list", async () => {
     const { getByText, getAllByText, queryByText } = render(
       <List initialItens={["Miguel"]} />
